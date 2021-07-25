@@ -1,9 +1,61 @@
-.search-tweets, 
+.search-tweets,
 .saved-tweets,
 .results {
-    min-height: 400px;
+  min-height: 400px;
 }
-.search-tweets, 
+.search-tweets,
 .saved-tweets {
-    border: 1px solid grey;
+  /* border: 1px solid grey; */
 }
+.results {
+  background-color: rgb(180, 180, 156);
+  height: 40vh;
+  overflow-y: scroll;
+  border-top: 2px solid black;
+}
+.result {
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+
+.tweet {
+  font-size: 14px;
+}
+.date {
+  font-size: 12px;
+}
+
+.search {
+  border: none;
+  position: relative;
+  font-size: 19px;
+  top: 8px;
+}
+.search-container {
+}
+.handle {
+    font-size: 14px;
+    color: #3070cf;
+}
+
+.culprit {
+    color: #3270ce;
+}
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+  outline: none;
+}
+
+@media (min-width: 992px) {
+  .results {
+    height: 80vh;
+  }
+  img.search-icon {
+    position: relative;
+    left: -8px;
+    top: 8px;;
+    }
+}
+

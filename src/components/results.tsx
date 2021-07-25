@@ -20,7 +20,7 @@ function Results({ tweets, allowDrop, handleSave = ()=>{} }: IResults) {
         }
             >
             {tweets.map((tweet: ITweet) => {
-                return <Result tweet={tweet} />
+                return <Result key={tweet.id} tweet={tweet} />
             })}
         </ul>
     )
