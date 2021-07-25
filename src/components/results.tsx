@@ -1,5 +1,4 @@
 import React from "react";
-import { compareAsc, format } from 'date-fns'
 import Result from "./result";
 import { ITweet } from "../interfaces";
 
@@ -19,8 +18,8 @@ function Results({ tweets, allowDrop, handleSave = ()=>{} }: IResults) {
             }
         }
             >
-            {tweets.map((tweet: ITweet) => {
-                return <Result key={tweet.id} tweet={tweet} />
+            {tweets.map((tweet: ITweet, index) => {
+                return <Result key={tweet.id} tweet={tweet} index={index} />
             })}
         </ul>
     )

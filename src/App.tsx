@@ -1,12 +1,12 @@
-import { throwStatement } from '@babel/types';
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import Results from './components/results';
 import ResultsHeader from './components/resultsHeader';
 import Search from './components/search'
 import dummyData from './dummyData';
-import {ITweet} from './interfaces'
+import { ITweet } from './interfaces'
 import * as lib from './lib/lib'
+import loadingIcon from './loading.svg'
 
 function App() {
   const [term, setTerm] = useState('')
@@ -14,33 +14,28 @@ function App() {
   const [saved, setSaved] = useState<ITweet[]>([])
   const [savedLog, setSavedLog] = useState({})
   const [savedSearchTerm, setSavedSearchTerm] = useState('')
+  const [loading, setLoading] = useState(false)
 
 
-  useEffect(()=>{
-    (async function(){
-      const lsSaved: ITweet[] = await lib.LS.get('saved',"[]")
-      const lsSavedLog: {} = await lib.LS.get('savedLog',"{}")
-      if( lsSaved ) setSaved( lsSaved)
-      if( lsSavedLog ) setSavedLog( lsSavedLog )
+  useEffect(() => {
+    (async function () {
+      const lsSaved: ITweet[] = await lib.LS.get('saved', "[]")
+      const lsSavedLog: {} = await lib.LS.get('savedLog', "{}")
+      if (lsSaved) setSaved(lsSaved)
+      if (lsSavedLog) setSavedLog(lsSavedLog)
     }())
-  },[])
+  }, [])
 
 
   async function handleSearch(term: string) {
     // const { statuses }: any = dummyData
-    const statuses = fetch(`http://localhost:5000/tweet?query=${term}`)
-      .then( response => response.json())
-      .then( statuses => {
+    setLoading(true)
+    fetch(`https://secret-dusk-30723.herokuapp.com/tweet?query=${term}`)
+      .then(response => response.json())
+      .then(statuses => {
+        setLoading(false)
         setTweets(statuses)
       })
-
-    // const response = await fetch(`https://secret-dusk-30723.herokuapp.com/tweet?query=${term}`)
-    // console.log({statuses: statuses.body})
-    // const { statuses }  = response
-    console.log({
-      isArray: Array.isArray(statuses),
-      statuses
-    })
   }
 
   const isNotInLog = (id: number) => !savedLog.hasOwnProperty(String(id))
@@ -49,16 +44,16 @@ function App() {
     const { target: { value }, code } = e
     setTerm(value)
     if (value !== '' && code === 'Enter') handleSearch(term)
-    if ( value === '') setTweets([])
+    if (value === '') setTweets([])
   }
   const handleSavedTextChange = (e: any) => {
     const { target: { value } } = e
     setSavedSearchTerm(value)
   }
-  
-  const handleSave = ( tweet: ITweet) => {
-    if( isNotInLog( tweet.id )){
-      const newSaved = [ tweet,...saved ]
+
+  const handleSave = (tweet: ITweet) => {
+    if (isNotInLog(tweet.id)) {
+      const newSaved = [tweet, ...saved]
       const newSavedLog = {
         [String(tweet.id)]: tweet.id,
         ...savedLog
@@ -88,7 +83,8 @@ function App() {
           {/* results */}
           <div className="results-container">
             <ResultsHeader />
-            <Results key="search" tweets={tweets.filter( ({ id })=> isNotInLog( id ))} allowDrop={false} />
+            { loading && <img className="loading-icon" src={loadingIcon} alt="loading icon" width="30px" height="30px" />}
+            <Results key="search" tweets={tweets.filter(({ id }) => isNotInLog(id))} allowDrop={false} />
           </div>
         </div>
 
@@ -96,25 +92,25 @@ function App() {
           <Search
             handleTextChange={handleSavedTextChange}
             term={term}
-            handleSearch={()=>{}}
+            handleSearch={() => { }}
             placeholder="search saved tweets"
           />
           <div className="results-container">
             <ResultsHeader />
-            <Results 
-              key="saved" 
+            <Results
+              key="saved"
               tweets={
                 saved
-                  .filter( (tweet) => {
-                    if( savedSearchTerm === '' ) return true
+                  .filter((tweet) => {
+                    if (savedSearchTerm === '') return true
                     const { user: { name, screen_name }, text } = tweet
-                    return name.includes(savedSearchTerm) || 
-                           screen_name.includes(savedSearchTerm) ||
-                           text.includes(savedSearchTerm)
-                  } )
-              } 
-              allowDrop={true} 
-              handleSave={handleSave} 
+                    return name.includes(savedSearchTerm) ||
+                      screen_name.includes(savedSearchTerm) ||
+                      text.includes(savedSearchTerm)
+                  })
+              }
+              allowDrop={true}
+              handleSave={handleSave}
             />
             {/* search  
                 delete

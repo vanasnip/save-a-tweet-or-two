@@ -1,3 +1,5 @@
+body {
+}
 .search-tweets,
 .saved-tweets,
 .results {
@@ -8,7 +10,7 @@
   /* border: 1px solid grey; */
 }
 .results {
-  background-color: rgb(180, 180, 156);
+  background-color: #b5c3ca;
   height: 40vh;
   overflow-y: scroll;
   border-top: 2px solid black;
@@ -16,6 +18,17 @@
 .result {
   padding-top: 7px;
   padding-bottom: 7px;
+  cursor: pointer;
+  border-radius: 9px 0 0 9px;
+}
+.result.odd:hover,
+.result.even:hover,
+.result:hover {
+    box-shadow: -9px 3px 10px #8e8f92;
+}
+
+.result.odd {
+  background-color: #89cff0;
 }
 
 .tweet {
@@ -30,22 +43,31 @@
   position: relative;
   font-size: 19px;
   top: 8px;
+  background-color: none;
 }
 .search-container {
 }
 .handle {
-    font-size: 14px;
-    color: #3070cf;
+  font-size: 14px;
+  color: #3070cf;
 }
 
 .culprit {
-    color: #3270ce;
+  color: #3270ce;
 }
 input:focus,
 select:focus,
 textarea:focus,
 button:focus {
   outline: none;
+}
+button:focus {
+  outline: none;
+}
+img.loading-icon {
+  position: absolute;
+  left: 45vw;
+  top: 32vh;
 }
 
 @media (min-width: 992px) {
@@ -55,7 +77,12 @@ button:focus {
   img.search-icon {
     position: relative;
     left: -8px;
-    top: 8px;;
-    }
-}
+    top: 8px;
+  }
 
+  img.loading-icon {
+    left: 24vw;
+    top: 47vh;
+    transform: scale(2.5)
+}
+}

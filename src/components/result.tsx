@@ -1,12 +1,10 @@
 
 // @ts-nocheck
 import React from "react";
-import { compareAsc, format } from 'date-fns'
+import {  format } from 'date-fns'
 import { ITweet } from "../interfaces";
-import { isTemplateLiteral } from "@babel/types";
-import { check } from "yargs";
 
-function Result({ tweet }: { tweet: ITweet }) {
+function Result({ tweet , index}: { tweet: ITweet, index: number }) {
     const formatDate = (date: string) => format(new Date(date), 'd MMM yyyy')
     function mentionDetector(src: string) {
         const regx = /(@\w+)/gi
@@ -18,7 +16,6 @@ function Result({ tweet }: { tweet: ITweet }) {
             if (!res.done) popMatch(matchFn)
         }
         popMatch(() => isMatch.next())
-        console.log(culprits)
         const lastCulprit = culprits.length - 1
         const lastSrcIndex = src.length - 1
         let lastCheckedIndex = 0
@@ -28,34 +25,33 @@ function Result({ tweet }: { tweet: ITweet }) {
             let before = ''
             if (index > 0) {
                 before = src.substring(lastCheckedIndex, index)
-                const beforeRE = React.createElement('span', { id: `before-${index}-${idx}` }, before);
-                const culpritRE = React.createElement('span', { id: `culprit-${index}-${idx}`, class: 'culprit' }, item);
+                const beforeRE = React.createElement('span', { key: `before-${index}-${idx}` }, before);
+                const culpritRE = React.createElement('span', { key: `culprit-${index}-${idx}`, className: 'culprit' }, item);
                 reactElements.push(beforeRE)
                 reactElements.push(culpritRE)
                 lastCheckedIndex = index + itemLen
             } else {
-                const culpritRE = React.createElement('span', { id: `culprit-${index}-${idx}`, class: 'culprit' }, item);
+                const culpritRE = React.createElement('span', { key: `culprit-${index}-${idx}`, className: 'culprit' }, item);
                 reactElements.push(culpritRE)
                 lastCheckedIndex = itemLen
             }
 
             if (idx === lastCulprit) {
                 const after = src.substring(lastCheckedIndex, lastSrcIndex)
-                const afterRE = React.createElement('span', { id: `after-${index}-${idx}` }, after);
+                const afterRE = React.createElement('span', { key: `after-${index}-${idx}` }, after);
                 reactElements.push(afterRE)
             }
 
         })
 
-        console.log( reactElements)
         return reactElements.length ? reactElements : src
 
     }
-    const { id, user: { name, screen_name, profile_image_url: img_url }, text, created_at } = tweet
-    
+    const { id, user: { name, screen_name, profile_image_url: img_url }, text, created_at,  } = tweet
+    const oddEven = (index: number) => index % 2 === 0 ? 'even' : 'odd'
     return <li
         key={id}
-        className="result row"
+        className={`result row ${oddEven( index )}`}
         draggable="true"
         onDragStart={(ev: any) => {
             ev.dataTransfer.setData('tweet', JSON.stringify(tweet))
